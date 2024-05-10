@@ -1,1 +1,1 @@
-<img src="./readme.md" width ="100%"/>
+<img src="./readme.gif" width ="100%"/>
