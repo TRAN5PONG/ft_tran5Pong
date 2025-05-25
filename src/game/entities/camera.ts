@@ -10,7 +10,7 @@ export class Camera {
       "camera",
       Math.PI / 2,
       Math.PI / 3,
-      20,
+      8,
       new Vector3(0, 0, 0),
       scene
     );

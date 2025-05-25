@@ -16,6 +16,8 @@
   "dependencies": {
     "@babylonjs/inspector": "^8.7.0",
     "@babylonjs/loaders": "^8.7.0",
-    "@babylonjs/materials": "^8.7.0"
+    "@babylonjs/materials": "^8.7.0",
+    "ammojs-typed": "^1.0.6",
+    "socket.io-client": "^4.8.1"
   }
 }

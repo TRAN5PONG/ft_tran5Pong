@@ -5,6 +5,7 @@ import { Engine } from "@babylonjs/core/Engines/engine";
 import { Color3, Vector3 } from "@babylonjs/core/Maths/math";
 
 import "@babylonjs/inspector";
+import { PhysicsImpostor } from "@babylonjs/core";
 
 export class Debug {
   private scene: Scene;

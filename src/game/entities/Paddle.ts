@@ -1,23 +1,32 @@
-import { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { TransformNode } from "@babylonjs/core";
+import {
+  PointerEventTypes,
+  TransformNode,
+  Matrix,
+  Vector3,
+  BoundingInfo,
+  Plane,
+  Space,
+} from "@babylonjs/core";
 import { Scene } from "@babylonjs/core/scene";
 import { LoadAssetContainerAsync } from "@babylonjs/core";
 
 export class Paddle {
   private Mesh: TransformNode | null = null;
   private scene: Scene;
-
+  private canvas: HTMLCanvasElement;
+  private floorMesh: TransformNode | null = null;
   private Boundaries = {
-    x: { min: 1.8, max: -1.8 },
-    y: { min: 1, max: 1.8 },
-    z: { min: 3, max: 2 },
+    x: { min: -2, max: 2 },
+    z: { min: 1.5, max: 3 },
   };
+  private meshOffset: Vector3 | null = null; // Offset to align top center
 
-  constructor(scene: Scene) {
+  constructor(scene: Scene, canvas: HTMLCanvasElement) {
     this.scene = scene;
+    this.canvas = canvas;
   }
 
-  async Load() {
+  async load(): Promise<void> {
     try {
       const Container = await LoadAssetContainerAsync(
         "/Models/paddle.glb",
@@ -34,20 +43,30 @@ export class Paddle {
     } catch (error) {
       console.error("Error loading paddle model:", error);
     }
+
+    this.floorMesh = this.scene.getMeshByName("Plane_primitive0");
+    this.setupInitialPosition();
   }
 
-  Setup() {
+  setupInitialPosition(): void {
     if (this.Mesh) {
       this.Mesh.position.x = 0;
-      this.Mesh.position.y = this.Boundaries.y.max;
+      this.Mesh.position.y = 1.8;
       this.Mesh.position.z = this.Boundaries.z.max;
+
+      // Enable Euler angles
+      this.Mesh.rotationQuaternion = null;
+
+      // Keep original X-rotation to align paddle flat on the table
       this.Mesh.rotation.x = -Math.PI / 2;
+      this.Mesh.rotation.y = 0;
+      this.Mesh.rotation.z = 0;
+
+      this.Mesh.rotate(Vector3.Forward(), Math.PI / 2, Space.WORLD);
     }
   }
-}
 
-// Boundaries
-// paddle (Player)
-// X : -1.8 TO 1.8 (left right)
-// Y : 3 TO 2 (forward backward)
-// Z : (-1.8 TO 1.8) (up down)
+  setupPointerControls(): void {
+  
+  }
+}

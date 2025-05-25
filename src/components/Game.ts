@@ -11,6 +11,12 @@ import { Paddle } from "../game/entities/Paddle";
 import { Arena } from "../game/entities/arena";
 import { Ball } from "../game/entities/Ball";
 
+// Sound
+import SoundManager from "../audio/SoundManager";
+import { Sound } from "@babylonjs/core";
+
+// import Ammo from 'ammojs-typed' // todo : should be removed
+
 export class GameCanvas extends HTMLElement {
   private canvas: HTMLCanvasElement;
   private engine: Engine;
@@ -25,21 +31,19 @@ export class GameCanvas extends HTMLElement {
   private Arena: Arena;
   private ball: Ball;
 
+  // Socket
+  private socket: WebSocket | null = null;
+
+  // Sound
+  private soundManager: SoundManager = new SoundManager();
+
   constructor() {
     super();
 
-    // Style the container
-    this.style.width = "1000px";
-    this.style.height = "90%";
-    this.style.backgroundColor = "lightblue";
-    this.style.padding = "10px";
-
+    this.id = "gameCanvasContainer";
     // Create canvas
     this.canvas = document.createElement("canvas");
-    this.canvas.style.width = "100%";
-    this.canvas.style.height = "100%";
-    this.canvas.style.border = "1px solid black";
-    this.canvas.style.backgroundColor = "grey";
+    this.canvas.id = "gameCanvas";
     this.appendChild(this.canvas);
 
     // Babylon engine & scene
@@ -54,41 +58,83 @@ export class GameCanvas extends HTMLElement {
     this.debug = new Debug(this.scene, this.engine);
     this.debug.ShowGroundGrid();
     this.debug.ShowAxisLines();
-    // debug.ShowDebuger();
+    this.debug.ShowDebuger();
 
     // Light setup
     this.light = new Light(this.scene);
 
     // models
-    this.paddle = new Paddle(this.scene);
+    this.paddle = new Paddle(this.scene, this.canvas);
     this.Arena = new Arena(this.scene);
     this.ball = new Ball(this.scene);
+
+    // Test PlayButton
+    const PlayButton = document.createElement("button");
+    PlayButton.innerText = "Play";
+    PlayButton.style.padding = "0px 20px";
+    PlayButton.style.height = "50px";
+    PlayButton.style.zIndex = "1000";
+    PlayButton.style.position = "absolute";
+    PlayButton.onclick = () => {
+      this.StartGame();
+    }
+    const ToggleButton = document.createElement("button");
+    ToggleButton.innerText = "Toggle Muffle";
+    ToggleButton.style.padding = "0px 20px";
+    ToggleButton.style.height = "50px";
+    ToggleButton.style.zIndex = "1000";
+    ToggleButton.style.position = "absolute";
+    ToggleButton.style.left = "100px";
+    ToggleButton.onclick = () => {
+      this.soundManager.toggleMuffle();
+    }
+
+    this.appendChild(PlayButton);
+    this.appendChild(ToggleButton);
   }
 
-  async loadModels() {
+  StartGame() {
+    this.soundManager.play("main");
+
+    this.socket = new WebSocket("http://10.13.250.143:3000/ws/game");
+    // Send Init Data to server
+    const TableBaseMeshData = this.Arena.getPhysicsInfo();
+    this.socket.onopen = () => {
+      this.socket?.send(JSON.stringify(TableBaseMeshData));
+    }
+
+    this.socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (this.ball && data?.ball) {
+        this.ball.GoTo(
+          data.ball.x,
+          data.ball.y,
+          data.ball.z
+        );
+      }
+    };
+  }
+
+  async Init() {
     try {
       await Promise.all([
-        this.paddle.Load(),
+        this.paddle.load(),
         this.Arena.Load(),
-        this.ball.Load(),
+        this.ball.load(),
+        
+        // SoundManager
+        this.soundManager.loadSounds(),
       ]);
     } catch (err) {
-      console.error("Error loading models:", err);
+      console.error("Error Initializing game:", err);
     }
   }
 
-  setupGame() {
-    this.paddle.Setup();
-  }
-
   render() {
-    this.loadModels().then(() => {
-      this.setupGame();
-
+    this.Init().then(() => {
       // const TableBaseMesh = this.models["scene"]
       //   .getChildMeshes()
       //   .find((el) => el.name === "TableBase");
-
       // const TableBaseMinX =
       //   TableBaseMesh?.getBoundingInfo().boundingBox.minimumWorld.x;
       // const TableBaseMaxX =
@@ -101,7 +147,6 @@ export class GameCanvas extends HTMLElement {
       //   TableBaseMesh?.getBoundingInfo().boundingBox.minimumWorld.y;
       // const TableBaseMaxY =
       //   TableBaseMesh?.getBoundingInfo().boundingBox.maximumWorld.y;
-
       // console.log("TableBaseMinX", TableBaseMinX);
       // console.log("TableBaseMaxX", TableBaseMaxX);
       // console.log("TableBaseMinZ", TableBaseMinZ);
