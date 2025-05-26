@@ -19,10 +19,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    // Ammo.js types
-    "typeRoots": ["node_modules/ammojs-typed/ammo/ambient"],
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true
   },
   "include": ["src"]
 }

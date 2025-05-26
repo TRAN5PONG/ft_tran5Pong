@@ -94,7 +94,7 @@ export class GameCanvas extends HTMLElement {
   }
 
   StartGame() {
-    this.soundManager.play("main");
+    this.soundManager.play("background");
 
     this.socket = new WebSocket("http://10.13.250.143:3000/ws/game");
     // Send Init Data to server

@@ -17,7 +17,7 @@ export default class SoundManager {
 	async loadSounds()
 	{
 		const soundsFiles : {[key: string]: string} = {
-			"main" : "/sounds/main.wav",
+			"background" : "/sounds/background.wav",
 		}
 
 		for (const sound in soundsFiles) {
