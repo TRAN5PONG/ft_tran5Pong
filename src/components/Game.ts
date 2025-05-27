@@ -35,7 +35,8 @@ export class GameCanvas extends HTMLElement {
   private socket: WebSocket | null = null;
 
   // Sound
-  private soundManager: SoundManager = new SoundManager();
+  private audioCtx : AudioContext = new AudioContext();
+  private soundManager: SoundManager = new SoundManager("/sounds/background.wav", this.audioCtx);
 
   constructor() {
     super();
@@ -87,6 +88,7 @@ export class GameCanvas extends HTMLElement {
     ToggleButton.style.left = "100px";
     ToggleButton.onclick = () => {
       this.soundManager.toggleMuffle();
+      this.soundManager.setVolume(0.4);
     }
 
     this.appendChild(PlayButton);
@@ -94,7 +96,8 @@ export class GameCanvas extends HTMLElement {
   }
 
   StartGame() {
-    this.soundManager.play("background");
+    this.soundManager.play();
+    
 
     this.socket = new WebSocket("http://10.13.250.143:3000/ws/game");
     // Send Init Data to server
@@ -123,7 +126,7 @@ export class GameCanvas extends HTMLElement {
         this.ball.load(),
         
         // SoundManager
-        this.soundManager.loadSounds(),
+        this.soundManager.loadSound(),
       ]);
     } catch (err) {
       console.error("Error Initializing game:", err);
