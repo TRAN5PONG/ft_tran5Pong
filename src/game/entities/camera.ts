@@ -16,6 +16,10 @@ export class Camera {
     );
   }
 
+  getCamera() {
+    return this.camera;
+  }
+
   attach(canvas: HTMLCanvasElement) {
     this.camera.attachControl(canvas, true);
   }

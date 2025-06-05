@@ -1,3 +1,6 @@
+@import './styles/chat.css';
+
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -46,4 +49,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center ;
+  /* Remove Mouse pointer */
+  /* cursor: none; */
 }

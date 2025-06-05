@@ -25,7 +25,7 @@ export class Arena {
       if (mesh.name !== "__root__") {
         mesh.parent = ObjGroup;
       }
-      if (mesh.name === "TableBase") {
+      if (mesh.name === "Chabka") {
         this.TableBaseMesh = mesh as AbstractMesh;
       }
     });

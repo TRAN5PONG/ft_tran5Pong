@@ -1,7 +1,7 @@
 import { Scene } from "@babylonjs/core/scene";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { LoadAssetContainerAsync } from "@babylonjs/core/Loading/sceneLoader";
-import { AbstractMesh } from "@babylonjs/core";
+import { AbstractMesh, Vector3 } from "@babylonjs/core";
 
 export class Ball {
   private meshGroup: TransformNode | null = null;
@@ -36,6 +36,7 @@ export class Ball {
   getPhysicsInfo(): {
     position: { x: number; y: number; z: number };
     size: { x: number; y: number; z: number };
+    radian: number;
   } | null {
     if (!this.mesh) return null;
 
@@ -54,6 +55,7 @@ export class Ball {
         y: size.y,
         z: size.z,
       },
+      radian : this.mesh.getBoundingInfo().boundingSphere.radiusWorld
     };
   }
 

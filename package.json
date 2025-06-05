@@ -10,14 +10,14 @@
   },
   "devDependencies": {
     "@babylonjs/core": "^8.7.0",
+    "@types/node": "^22.15.29",
+    "@vitejs/plugin-react": "^4.5.1",
     "typescript": "~5.7.2",
     "vite": "^6.1.0"
   },
   "dependencies": {
     "@babylonjs/inspector": "^8.7.0",
     "@babylonjs/loaders": "^8.7.0",
-    "@babylonjs/materials": "^8.7.0",
-    "ammojs-typed": "^1.0.6",
-    "socket.io-client": "^4.8.1"
+    "@babylonjs/materials": "^8.7.0"
   }
 }
